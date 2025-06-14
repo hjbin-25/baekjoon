@@ -4,31 +4,31 @@ using namespace std;
 
 int N;
 vector<vector<int>> board;
-vector<vector<long long>> dp;
+vector<vector<long long>> visited;
 
-long long checkingBoard(int i, int j) {
-    if (i >= N || j >= N) return 0;
-    if (i == N - 1 && j == N - 1) return 1;
+long long dp(int i, int j) {
+    if ((i == N - 1) && (j == N - 1)) return 1;
+    if ((i >= N) || (j >= N)) return 0;
 
-    if (dp[i][j] != -1) return dp[i][j];
+    if (board[i][j] == 0) return 0;
+    
+    if (visited[i][j] != -1)
+        return visited[i][j];
 
-    int jump = board[i][j];
-    if (jump == 0) return dp[i][j] = 0;
+    visited[i][j] = dp(i + board[i][j], j) + dp(i, j + board[i][j]);
 
-    dp[i][j] = checkingBoard(i + jump, j) + checkingBoard(i, j + jump);
-    return dp[i][j];
+    return visited[i][j];
 }
 
-int main() {
+int main () {
     cin >> N;
 
     board.resize(N, vector<int>(N));
-    dp.resize(N, vector<long long>(N, -1));
-
+    visited.resize(N, vector<long long>(N, -1));
     for (int i = 0; i < N; ++i) {
         for (int j = 0; j < N; ++j)
             cin >> board[i][j];
     }
-    
-    cout << checkingBoard(0, 0) << endl;
+
+    cout << dp(0, 0) << endl;
 }
